@@ -1,7 +1,9 @@
 # Changelog — grok-actor
 
 ## 1.5.1 — 2026-08-12
-- Listed in local marketplace `anthony-grok-plugins` (`marketplace/grok-remote-market`) with `plugin-index.json` catalog
+- Published like grok-remote: `https://github.com/Amnibro/grok-actor` (public), tag `v1.5.0`, `install-local.ps1`, `PUBLISH.md`, MIT LICENSE
+- Marketplace catalog points at GitHub URL (same pattern as grok-remote)
+- Canonical source tree: `Documents/ai/grok-actor`
 
 ## 1.5.0 — 2026-08-12
 - **Scope:** `global` (all sessions), `session` (this session_id), `chat` (this chat until clear)
