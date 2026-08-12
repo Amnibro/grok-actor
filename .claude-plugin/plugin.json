@@ -1,0 +1,19 @@
+{
+  "name": "grok-actor",
+  "version": "1.5.0",
+  "description": "Actor/personality presets for Grok Build. /actor opens a picker; invents unknown personas; scope: all sessions, this session, or this chat. Not voice-chat.",
+  "author": {
+    "name": "Anthony"
+  },
+  "homepage": "https://github.com/Amnibro/grok-actor",
+  "keywords": [
+    "personality",
+    "actor",
+    "tone",
+    "persona",
+    "style",
+    "role",
+    "scope"
+  ],
+  "category": "productivity"
+}
