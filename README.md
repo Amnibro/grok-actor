@@ -38,14 +38,14 @@ grok plugin install Amnibro/grok-actor@v1.5.0 --trust
 ### Local (dev)
 
 ```powershell
-cd C:\Users\antho\Documents\ai\grok-actor
+cd <repos>\grok-actor
 .\install-local.ps1
 ```
 
 Or:
 
 ```powershell
-grok plugin install C:\Users\antho\Documents\ai\grok-actor --trust
+grok plugin install <repos>\grok-actor --trust
 grok plugin enable grok-actor
 ```
 

@@ -14,14 +14,14 @@ Grok does **not** currently push community plugins to a single global xAI store 
 ## 1. Local install (slash commands on your PC)
 
 ```powershell
-cd C:\Users\antho\Documents\ai\grok-actor
+cd <repos>\grok-actor
 .\install-local.ps1
 ```
 
 Or:
 
 ```powershell
-grok plugin install C:\Users\antho\Documents\ai\grok-actor --trust
+grok plugin install <repos>\grok-actor --trust
 grok plugin enable grok-actor
 ```
 
@@ -44,7 +44,7 @@ Then:
 4. Tag a release:
 
 ```powershell
-cd C:\Users\antho\Documents\ai\grok-actor
+cd <repos>\grok-actor
 git init   # if needed
 git add .
 git commit -m "grok-actor v1.5.0"
@@ -75,7 +75,7 @@ powershell -NoProfile -File .\tests\run_tests.ps1
 
 ## 3. Personal marketplace catalog
 
-Repo: `C:\Users\antho\Documents\ai\marketplace\grok-remote-market` (catalog name: **anthony-grok-plugins**).
+Repo: `<repos>\marketplace\grok-remote-market` (catalog name: **anthony-grok-plugins**).
 
 ```json
 {
@@ -93,7 +93,7 @@ Repo: `C:\Users\antho\Documents\ai\marketplace\grok-remote-market` (catalog name
 Users:
 
 ```bash
-grok plugin marketplace add C:\Users\antho\Documents\ai\marketplace\grok-remote-market
+grok plugin marketplace add <repos>\marketplace\grok-remote-market
 # or when the marketplace is on GitHub:
 # grok plugin marketplace add Amnibro/anthony-grok-plugins
 grok plugin install grok-actor --trust
