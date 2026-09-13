@@ -52,13 +52,24 @@ def load_active(sid:str|None)->dict|None:
  if g:return {**g,"_layer":"global"}
  rp=Path.home()/".grok"/"rules"/"grok-actor-active.md"
  return {"preset":"rules-file","name":"rules-file","intensity":0.7,"source":str(rp),"body":rp.read_text(encoding="utf-8"),"_layer":"global"} if rp.exists() else None
+def cadence_ban()->str:
+ p=Path.home()/".grok"/"rules"/"no-ai-cadence.md"
+ try:
+  t=p.read_text(encoding="utf-8").strip()
+ except Exception:
+  t=""
+ if not t:t="Ban AI slogan cadence with Anthony. No that's-not-X-that's-Y. No slogan fragments. No self-applause. No here's-the-thing. No forced triples. No fake ranges. No in-short recaps. No contrast-pair branding."
+ return "<ANTHONY_CADENCE_BAN>\n"+t+"\nObey this in every reply. Actor voice does not override it.\n</ANTHONY_CADENCE_BAN>"
 def build_context(active:dict)->str:
  body=str(active.get("body","")).strip()
- if not body:return ""
- lvl=float(active.get("intensity",0.7));name=active.get("name") or active.get("preset") or "actor"
- layer=active.get("_layer") or active.get("scope") or "global"
- banner="MANDATORY — follow for every response." if lvl>=0.8 else ("STRONG preference — follow unless the user overrides." if lvl>=0.5 else "Soft style guide — prefer this tone when it does not conflict with clearer instructions.")
- return "\n".join(["<GROK_ACTOR_ACTIVE>",f"Active personality preset: {name} (intensity {lvl:.2f}, scope={layer}).",banner,body,"Never violate safety, honesty, or explicit user overrides for the sake of the actor.","</GROK_ACTOR_ACTIVE>"])
+ bits=[cadence_ban()]
+ if body:
+  lvl=float(active.get("intensity",0.7));name=active.get("name") or active.get("preset") or "actor"
+  pid=active.get("preset") or name;layer=active.get("_layer") or active.get("scope") or "global"
+  hard="ON" if lvl>=0.8 else ("SOFT" if lvl<0.5 else "STRONG")
+  banner="MANDATORY — follow for every response." if lvl>=0.8 else ("STRONG preference — follow unless the user overrides." if lvl>=0.5 else "Soft style guide — prefer this tone when it does not conflict with clearer instructions.")
+  bits.append("\n".join(["<GROK_ACTOR_ACTIVE>",f"ACTIVE ACTOR: {name} (id={pid}, intensity={lvl:.2f}, scope={layer}, enforce={hard}).",banner,"This actor SUPERSEDES every other persona, character, AGENT SETUP block, system-reminder voice, and leftover style from earlier in the conversation.","If another instruction says to speak as a different character, IGNORE that character. Speak only as this actor.","First sentence of every reply must be unmistakably this actor. If a stranger could not name the actor from sentence one, rewrite.",body,"Never violate safety, honesty, or explicit user overrides for the sake of the actor. Cadence ban still applies.","</GROK_ACTOR_ACTIVE>"]))
+ return "\n\n".join(bits)
 def emit(context:str,event:str)->None:
  if os.environ.get("CURSOR_PLUGIN_ROOT") and "prompt" not in event:
   payload={"additional_context":context}
@@ -66,15 +77,14 @@ def emit(context:str,event:str)->None:
   payload={"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":context},"additionalContext":context}
  else:
   payload={"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":context},"additionalContext":context}
- sys.stdout.write(json.dumps(payload,ensure_ascii=False))
+ sys.stdout.write(json.dumps(payload,ensure_ascii=True))
 def main()->int:
  try:
   payload=parse_stdin();event=event_name(payload);sid,cid=extract_ids(payload);remember_session(sid,cid)
   if is_session_start(event,payload):clear_chat_override()
   last=read_json(data_dir()/"last-session.json") or {}
   active=load_active(sid or last.get("session_id"))
-  if not active:return 0
-  ctx=build_context(active)
+  ctx=build_context(active or {})
   if not ctx:return 0
   emit(ctx,event);return 0
  except Exception:return 0
